@@ -1,0 +1,46 @@
+.food-display{
+    margin-top: 30px;
+}
+.food-display h2{
+    font-size: max(2vw,24px);
+    font-weight: 600;
+}
+.food-display-list{
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+    margin-top: 30px;
+    gap: 30px;
+    row-gap: 50px;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .food-display-list {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+        row-gap: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .food-display {
+        margin-top: 20px;
+    }
+    
+    .food-display h2 {
+        font-size: 20px;
+    }
+    
+    .food-display-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        row-gap: 30px;
+    }
+}
+
+@media (max-width: 400px) {
+    .food-display-list {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

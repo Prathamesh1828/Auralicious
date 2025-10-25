@@ -1,0 +1,443 @@
+.place-order{
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 50px;
+    margin-top: 100px;
+}
+.place-order-left{
+    width: 100%;
+    max-width: max(30%, 500px);
+}
+.place-order-left .title{
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 50px;
+}
+.place-order-left input{
+    margin-bottom: 15px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #c5c5c5;
+    border-radius: 4px;
+    outline-color: tomato;
+}
+.place-order-left .multi-fields{
+    display: flex;
+    gap: 10px;
+}
+.place-order-right{
+    width: 100%;
+    max-width: max(40%,500px);
+}
+.place-order .cart-total button{
+    margin-top: 30px;
+}
+
+/* Payment Method Selector Styles */
+.payment-method-selector {
+    margin: 20px 0;
+    padding: 20px 0 0;
+    border-top: 1px solid #e0e0e0;
+}
+
+.payment-method-selector h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.payment-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+
+.payment-option:hover {
+    border-color: #ff6b35;
+    background: #fafafa;
+}
+
+.payment-option.selected {
+    border-color: #ff6b35;
+    background: #fff;
+}
+
+.payment-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.payment-option-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.payment-details {
+    flex: 1;
+}
+
+.payment-details strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.payment-details p {
+    font-size: 13px;
+    color: #666;
+    margin: 0 0 6px 0;
+}
+
+.recommended-badge {
+    display: inline-block;
+    background: #f0f0f0;
+    color: #666;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payment-logos {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+
+.mini-logo {
+    font-size: 11px;
+    background: #f5f5f5;
+    color: #666;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+    border: 1px solid #e0e0e0;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    background: #ff6b35;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Loading state */
+.place-order .cart-total button.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.place-order .cart-total button {
+    background: tomato;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: 100%;
+}
+
+.place-order .cart-total button:hover:not(:disabled) {
+    background: #e74c3c;
+}
+
+.place-order .cart-total button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Refund Policy Styles */
+.refund-policy {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}
+
+.refund-policy h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ff6b35;
+}
+
+.policy-content {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.policy-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.policy-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.policy-content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.policy-content::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.policy-section {
+    margin-bottom: 20px;
+}
+
+.policy-section h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 8px;
+}
+
+.policy-section p {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.policy-section ul {
+    margin: 8px 0;
+    padding-left: 20px;
+}
+
+.policy-section ul li {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 5px;
+}
+
+.contact-info {
+    background: #fff;
+    padding: 10px;
+    border-left: 3px solid #ff6b35;
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.contact-info strong {
+    color: #333;
+}
+
+/* Payment Trust Badge Styles */
+.payment-trust-badge {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.trust-badge-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.lock-icon {
+    flex-shrink: 0;
+}
+
+.trust-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.secure-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+.powered-text {
+    font-size: 11px;
+    color: #666;
+}
+
+.payment-methods-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.method-icon {
+    font-size: 10px;
+    font-weight: 700;
+    color: #555;
+    padding: 4px 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .place-order {
+        gap: 30px;
+        margin-top: 80px;
+    }
+    
+    .place-order-left {
+        max-width: 100%;
+    }
+    
+    .place-order-right {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .place-order {
+        flex-direction: column;
+        gap: 40px;
+        margin-top: 60px;
+    }
+    
+    .place-order-left {
+        max-width: 100%;
+    }
+    
+    .place-order-left .title {
+        font-size: 24px;
+        margin-bottom: 30px;
+    }
+    
+    .place-order-right {
+        max-width: 100%;
+    }
+    
+    .payment-option {
+        padding: 14px;
+    }
+    
+    .payment-details strong {
+        font-size: 14px;
+    }
+    
+    .payment-details p {
+        font-size: 12px;
+    }
+    
+    .mini-logo {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+    
+    .refund-policy {
+        margin-top: 20px;
+        padding: 15px;
+    }
+    
+    .refund-policy h3 {
+        font-size: 16px;
+    }
+    
+    .policy-content {
+        max-height: 300px;
+    }
+    
+    .policy-section h4 {
+        font-size: 13px;
+    }
+    
+    .policy-section p,
+    .policy-section ul li {
+        font-size: 12px;
+    }
+    
+    .payment-trust-badge {
+        margin-top: 15px;
+        padding: 12px;
+    }
+    
+    .secure-text {
+        font-size: 12px;
+    }
+    
+    .powered-text {
+        font-size: 10px;
+    }
+    
+    .method-icon {
+        font-size: 9px;
+        padding: 3px 6px;
+    }
+}
+
+@media (max-width: 600px) {
+    .place-order-left .multi-fields {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .place-order-left input {
+        font-size: 14px;
+    }
+    
+    .payment-logos {
+        flex-wrap: wrap;
+    }
+    
+    .trust-badge-content {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .payment-methods-icons {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+}
