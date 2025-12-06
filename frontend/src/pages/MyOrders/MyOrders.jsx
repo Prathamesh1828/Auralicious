@@ -1,5 +1,29 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./MyOrders.css";
+
+/* Add this to MyOrders.css */
+const styles = `
+.my-orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.refresh-btn {
+  padding: 8px 16px;
+  background-color: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.refresh-btn:hover {
+  background-color: #e55a2b;
+}
+`;
 import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 import OrderTracking from "../../components/OrderTracking/OrderTracking";
@@ -19,6 +43,7 @@ const MyOrders = () => {
       );
       if (response.data.success) {
         setOrders(response.data.data);
+        console.log("Fetched Orders:", response.data.data);
       }
     } catch (error) {
       console.log("Error fetching orders:", error);
@@ -46,8 +71,13 @@ const MyOrders = () => {
 
   return (
     <div className="my-orders">
-      <h2>My Orders</h2>
-      
+      <div className="my-orders-header">
+        <h2>My Orders</h2>
+        <button onClick={fetchOrders} className="refresh-btn">
+          Refresh Orders
+        </button>
+      </div>
+
       {orders.length === 0 ? (
         <div className="no-orders">
           <p>You haven't placed any orders yet.</p>
@@ -105,7 +135,7 @@ const MyOrders = () => {
                   </p>
                   <p>Phone: {order.address.phone}</p>
                 </div>
-                
+
                 <div className="order-summary">
                   <div className="payment-method">
                     <strong>Payment:</strong>{" "}
@@ -126,7 +156,7 @@ const MyOrders = () => {
               </div>
 
               <div className="order-actions">
-                <button 
+                <button
                   className="track-order-btn"
                   onClick={() => setSelectedOrder(order)}
                 >
@@ -140,12 +170,12 @@ const MyOrders = () => {
           ))}
         </div>
       )}
-      
+
       {/* Order Tracking Modal */}
       {selectedOrder && (
-        <OrderTracking 
-          order={selectedOrder} 
-          onClose={() => setSelectedOrder(null)} 
+        <OrderTracking
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
         />
       )}
     </div>

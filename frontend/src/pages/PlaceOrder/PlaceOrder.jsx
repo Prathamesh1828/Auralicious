@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const PlaceOrder = () => {
   const { getTotalCartAmount, token, food_list, cartItems, url } = useContext(StoreContext);
   const navigate = useNavigate();
-  
+
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -42,29 +42,29 @@ const PlaceOrder = () => {
 
   const placeOrder = async (event) => {
     event.preventDefault();
-    
+
     console.log("=== PLACE ORDER FUNCTION CALLED ===");
     console.log("Payment Method Selected:", paymentMethod);
     console.log("Token:", token ? "Present" : "Missing");
     console.log("Cart Total:", getTotalCartAmount());
-    
+
     // Check if user is logged in
     if (!token) {
       alert("Please login to place an order");
       setLoading(false);
       return;
     }
-    
+
     // Check if cart is empty
     if (getTotalCartAmount() === 0) {
       alert("Your cart is empty");
       setLoading(false);
       return;
     }
-    
+
     setLoading(true);
     console.log("Loading state set to true");
-    
+
     let orderItems = [];
     food_list.map((item) => {
       if (cartItems[item._id] > 0) {
@@ -87,15 +87,15 @@ const PlaceOrder = () => {
       console.log("=== SENDING ORDER TO BACKEND ===");
       console.log("Order Data:", orderData);
       console.log("Backend URL:", url);
-      
-      let response = await axios.post(url + "/api/order/place", orderData, { 
-        headers: { token } 
+
+      let response = await axios.post(url + "/api/order/place", orderData, {
+        headers: { token }
       });
-      
+
       console.log("=== BACKEND RESPONSE RECEIVED ===");
       console.log("Full Response:", response);
       console.log("Response Data:", response.data);
-      
+
       if (response.data.success) {
         // Handle Cash on Delivery
         if (paymentMethod === "cod") {
@@ -104,7 +104,7 @@ const PlaceOrder = () => {
           setLoading(false);
           return;
         }
-        
+
         // Handle Razorpay payment
         // Check if Razorpay is loaded
         if (!window.Razorpay) {
@@ -126,7 +126,7 @@ const PlaceOrder = () => {
             console.log("Razorpay Order ID:", razorpayResponse.razorpay_order_id);
             console.log("Razorpay Payment ID:", razorpayResponse.razorpay_payment_id);
             console.log("Razorpay Signature:", razorpayResponse.razorpay_signature);
-            
+
             // Verify payment signature on backend
             try {
               const verifyResponse = await axios.post(
@@ -138,18 +138,19 @@ const PlaceOrder = () => {
                 },
                 { headers: { token } }
               );
-              
+
               console.log("Verification Response:", verifyResponse.data);
-              
+
               if (verifyResponse.data.success) {
                 alert("Payment successful! Your order has been placed.");
                 navigate("/myorders"); // Navigate to orders page
               } else {
-                alert("Payment verification failed. Please contact support.");
+                console.error("Verification failed response:", verifyResponse.data);
+                alert(`Payment verification failed. Server message: ${verifyResponse.data.message}`);
               }
             } catch (error) {
               console.error("Verification error:", error);
-              alert("Payment verification failed. Please contact support with your payment ID: " + razorpayResponse.razorpay_payment_id);
+              alert(`Payment verification error: ${error.response?.data?.message || error.message}`);
             }
             setLoading(false);
           },
@@ -166,22 +167,26 @@ const PlaceOrder = () => {
             color: "#ff6b35"
           },
           modal: {
-            ondismiss: function() {
+            ondismiss: function () {
               setLoading(false);
               console.log('Checkout form closed by user');
               alert("Payment cancelled. Your order has been saved but not confirmed.");
             }
+          },
+          method: {
+            upi: true,
+            card: true
           }
         };
 
         const razorpay = new window.Razorpay(options);
-        
+
         razorpay.on('payment.failed', function (errorResponse) {
           console.error("Payment failed:", errorResponse.error);
           alert(`Payment failed: ${errorResponse.error.description}\nReason: ${errorResponse.error.reason}`);
           setLoading(false);
         });
-        
+
         razorpay.open();
       } else {
         alert("Error creating order: " + (response.data.message || "Unknown error"));
@@ -190,7 +195,7 @@ const PlaceOrder = () => {
     } catch (error) {
       console.error("Order error:", error);
       console.error("Error details:", error.response?.data);
-      
+
       if (error.response) {
         // Server responded with error
         alert(`Error: ${error.response.data.message || "Failed to place order"}`);
@@ -210,85 +215,84 @@ const PlaceOrder = () => {
       <div className="place-order-left">
         <p className="title">Delivery Information</p>
         <div className="multi-fields">
-          <input 
+          <input
             required
             name="firstName"
             onChange={onChangeHandler}
             value={data.firstName}
-            type="text" 
-            placeholder="First Name" 
+            type="text"
+            placeholder="First Name"
           />
-          <input 
+          <input
             required
             name="lastName"
             onChange={onChangeHandler}
             value={data.lastName}
-            type="text" 
-            placeholder="Last Name" 
+            type="text"
+            placeholder="Last Name"
           />
         </div>
-        <input 
+        <input
           required
           name="email"
           onChange={onChangeHandler}
           value={data.email}
-          type="email" 
-          placeholder="Email Address" 
+          type="email"
+          placeholder="Email Address"
         />
-        <input 
+        <input
           required
           name="street"
           onChange={onChangeHandler}
           value={data.street}
-          type="text" 
-          placeholder="Street" 
+          type="text"
+          placeholder="Street"
         />
         <div className="multi-fields">
-          <input 
+          <input
             required
             name="city"
             onChange={onChangeHandler}
             value={data.city}
-            type="text" 
-            placeholder="City" 
+            type="text"
+            placeholder="City"
           />
-          <input 
+          <input
             required
             name="state"
             onChange={onChangeHandler}
             value={data.state}
-            type="text" 
-            placeholder="State" 
+            type="text"
+            placeholder="State"
           />
         </div>
         <div className="multi-fields">
-          <input 
+          <input
             required
             name="zipcode"
             onChange={onChangeHandler}
             value={data.zipcode}
-            type="text" 
-            placeholder="Zip Code" 
+            type="text"
+            placeholder="Zip Code"
           />
-          <input 
+          <input
             required
             name="country"
             onChange={onChangeHandler}
             value={data.country}
-            type="text" 
-            placeholder="Country" 
+            type="text"
+            placeholder="Country"
           />
         </div>
-        <input 
+        <input
           required
           name="phone"
           onChange={onChangeHandler}
           value={data.phone}
-          type="tel" 
-          placeholder="Phone" 
+          type="tel"
+          placeholder="Phone"
         />
-        
-        {/* Refund & Return Policy */}
+
         <div className="refund-policy">
           <h3>Refund & Return Policy</h3>
           <div className="policy-content">
@@ -296,7 +300,7 @@ const PlaceOrder = () => {
               <h4>1. No Returns on Delivered Food</h4>
               <p>Since our products are perishable, we do not accept returns once the order has been delivered. However, if there is a problem with your order, we'll make it right through refund or replacement as applicable.</p>
             </div>
-            
+
             <div className="policy-section">
               <h4>2. Refund Eligibility</h4>
               <p>You may be eligible for a refund or replacement in the following cases:</p>
@@ -307,7 +311,7 @@ const PlaceOrder = () => {
                 <li>You were charged incorrectly due to a technical issue</li>
               </ul>
             </div>
-            
+
             <div className="policy-section">
               <h4>3. Non-Refundable Situations</h4>
               <p>Refunds are not applicable in the following cases:</p>
@@ -317,7 +321,7 @@ const PlaceOrder = () => {
                 <li>Delays caused by external factors (traffic, weather, festivals, etc.)</li>
               </ul>
             </div>
-            
+
             <div className="policy-section">
               <h4>4. Cancellation and Refund Timeline</h4>
               <ul>
@@ -326,7 +330,7 @@ const PlaceOrder = () => {
                 <li>Approved refunds will be processed within 3-5 business days to your original payment method</li>
               </ul>
             </div>
-            
+
             <div className="policy-section">
               <h4>5. How to Request a Refund</h4>
               <p>To request a refund or report an issue:</p>
@@ -336,11 +340,11 @@ const PlaceOrder = () => {
                 <li>Our team will review and respond promptly</li>
               </ul>
               <p className="contact-info">
-                <strong>Email:</strong> support@tomato.com<br/>
+                <strong>Email:</strong> support@tomato.com<br />
                 <strong>Phone:</strong> +91 98765 43210
               </p>
             </div>
-            
+
             <div className="policy-section">
               <h4>6. Our Commitment</h4>
               <p>We take customer satisfaction seriously and always aim to resolve issues fairly. Thank you for trusting us for your food delivery needs!</p>
@@ -367,12 +371,12 @@ const PlaceOrder = () => {
               <b>₹{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 50}</b>
             </div>
           </div>
-          
+
           {/* Payment Method Selection */}
           <div className="payment-method-selector">
             <h3>Choose Payment Method</h3>
             <div className="payment-options">
-              
+
               {/* Cash on Delivery */}
               <label className={`payment-option ${paymentMethod === "cod" ? "selected" : ""}`}>
                 <input
@@ -393,7 +397,7 @@ const PlaceOrder = () => {
                   <div className="checkmark">✓</div>
                 )}
               </label>
-              
+
               {/* Razorpay */}
               <label className={`payment-option ${paymentMethod === "razorpay" ? "selected" : ""}`}>
                 <input
@@ -418,23 +422,23 @@ const PlaceOrder = () => {
                   <div className="checkmark">✓</div>
                 )}
               </label>
-              
+
             </div>
           </div>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             disabled={loading || getTotalCartAmount() === 0}
             className={loading ? "loading" : ""}
           >
             {loading ? "Processing..." : "PROCEED TO PAYMENT"}
           </button>
-          
+
           {/* Razorpay Trust Badge */}
           <div className="payment-trust-badge">
             <div className="trust-badge-content">
               <svg className="lock-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C9.243 2 7 4.243 7 7V10H6C4.897 10 4 10.897 4 12V20C4 21.103 4.897 22 6 22H18C19.103 22 20 21.103 20 20V12C20 10.897 19.103 10 18 10H17V7C17 4.243 14.757 2 12 2ZM9 7C9 5.346 10.346 4 12 4C13.654 4 15 5.346 15 7V10H9V7Z" fill="#4CAF50"/>
+                <path d="M12 2C9.243 2 7 4.243 7 7V10H6C4.897 10 4 10.897 4 12V20C4 21.103 4.897 22 6 22H18C19.103 22 20 21.103 20 20V12C20 10.897 19.103 10 18 10H17V7C17 4.243 14.757 2 12 2ZM9 7C9 5.346 10.346 4 12 4C13.654 4 15 5.346 15 7V10H9V7Z" fill="#4CAF50" />
               </svg>
               <div className="trust-text">
                 <span className="secure-text">100% Secure Payments</span>
@@ -449,7 +453,7 @@ const PlaceOrder = () => {
           </div>
         </div>
       </div>
-    </form>
+    </form >
   );
 };
 

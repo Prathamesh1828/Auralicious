@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import NavBar from "./components/NavBar/NavBar";
-import Footer from "./components/Footer/Footer"; 
+import Footer from "./components/Footer/Footer";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Cart from "./pages/Cart/Cart";
 import PlaceOrder from "./pages/PlaceOrder/PlaceOrder";
 import LoginPopup from "./components/LoginPopup/LoginPopup";
-import SearchResults from "./pages/SearchResults/SearchResults"; 
+import SearchResults from "./pages/SearchResults/SearchResults";
 import ScrollToTopButton from "./components/ScrollToTop/ScrollToTop";
 import ChatWidget from "./components/ChatWidget/ChatWidget";
 import Verify from "./pages/Verify/Verify";
 import MyOrders from "./pages/MyOrders/MyOrders";
 import Profile from "./pages/Profile/Profile";
 import Lenis from "lenis";
+
+import BackgroundController from "./components/BackgroundController/BackgroundController";
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -62,6 +64,7 @@ const App = () => {
 
   return (
     <>
+      <BackgroundController />
       {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
 
       <div className="app">
