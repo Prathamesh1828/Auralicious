@@ -18,7 +18,7 @@ app.use(express.json())
 app.use(cors({
   origin: [
     'http://localhost:5173', // For local development
-    'https://auralicious.vercel.app/' // Replace with your Vercel app URL
+    'https://auralicious.vercel.app' // Replace with your Vercel app URL
   ],
   credentials: true
 }))
@@ -27,18 +27,18 @@ app.use(cors({
 connectDB();
 
 // api endpoints
-app.use("/api/food",foodRouter)
-app.use("/images",express.static('uploads'))
-app.use("/api/user",userRouter)
-app.use("/api/cart",cartRouter)
-app.use("/api/order",orderRouter)
+app.use("/api/food", foodRouter)
+app.use("/images", express.static('uploads'))
+app.use("/api/user", userRouter)
+app.use("/api/cart", cartRouter)
+app.use("/api/order", orderRouter)
 
-app.get("/",(req,res)=>{
-    res.send("API Working")
+app.get("/", (req, res) => {
+  res.send("API Working")
 })
 
 
-app.listen(port,()=>{
-    console.log(`Server started on http://localhost:${port}`)
+app.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`)
 })
 
