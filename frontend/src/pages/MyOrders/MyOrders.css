@@ -8,7 +8,43 @@
     font-size: 28px;
     font-weight: 700;
     color: #333;
+    margin-bottom: 0;
+    /* Removed bottom margin as header handles it */
+}
+
+.my-orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.refresh-btn {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #ff6b35 0%, #ff4757 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+}
+
+.refresh-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    background: linear-gradient(135deg, #ff8c61 0%, #ff6b7d 100%);
+}
+
+.refresh-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(255, 107, 53, 0.3);
 }
 
 /* Loading State */
@@ -31,8 +67,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-container p {

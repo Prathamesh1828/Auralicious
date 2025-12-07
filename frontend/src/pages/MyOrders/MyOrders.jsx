@@ -1,29 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./MyOrders.css";
 
-/* Add this to MyOrders.css */
-const styles = `
-.my-orders-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
 
-.refresh-btn {
-  padding: 8px 16px;
-  background-color: #ff6b35;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.refresh-btn:hover {
-  background-color: #e55a2b;
-}
-`;
 import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
 import OrderTracking from "../../components/OrderTracking/OrderTracking";
