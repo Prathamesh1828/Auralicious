@@ -15,7 +15,13 @@ const port = 4000
 
 // middleware
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: [
+    'http://localhost:5173', // For local development
+    'https://auralicious.vercel.app/' // Replace with your Vercel app URL
+  ],
+  credentials: true
+}))
 
 // db connection
 connectDB();
