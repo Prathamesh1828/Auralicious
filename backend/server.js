@@ -19,7 +19,8 @@ app.use(express.json())
 app.use(cors({
   origin: [
     'http://localhost:5173', // For local development
-    'https://auralicious.vercel.app' // Replace with your Vercel app URL
+    'https://auralicious.vercel.app', // Replace with your Vercel app URL
+    'https://auralicious-admin.vercel.app/' // TODO: Replace with your actual Admin Panel URL
   ],
   credentials: true
 }))

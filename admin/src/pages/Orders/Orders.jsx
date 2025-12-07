@@ -8,8 +8,10 @@ const Orders = ({ url }) => {
   const [orders, setOrders] = useState([])
 
   const fetchAllOrders = async () => {
+    console.log("Fetching orders from:", `${url}/api/order/list`);
     try {
       const response = await axios.get(url + "/api/order/list")
+      console.log("Orders response:", response.data);
       if (response.data.success) {
         setOrders(response.data.data)
       } else {
@@ -17,7 +19,8 @@ const Orders = ({ url }) => {
       }
     } catch (error) {
       toast.error("Failed to fetch orders")
-      console.error(error)
+      console.error("Error fetching orders:", error);
+      if (error.response) console.error("Server responded with:", error.response.status, error.response.data);
     }
   }
 
@@ -99,8 +102,8 @@ const Orders = ({ url }) => {
                     <span className="amount-label">Total Amount:</span>
                     <span className="amount-value">₹{order.amount}</span>
                   </div>
-                  <select 
-                    onChange={(event) => statusHandler(event, order._id)} 
+                  <select
+                    onChange={(event) => statusHandler(event, order._id)}
                     value={order.status}
                     className="status-select"
                   >
