@@ -1,16 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { StoreContext } from '../../context/StoreContext';
 import './ChatWidget.css';
 
 const ChatWidget = () => {
+  const { food_list } = useContext(StoreContext);
   const [isOpen, setIsOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(true);
   const [messages, setMessages] = useState([
-    { 
-      id: 1, 
-      text: "👋 Hello! I'm CraveKeeper, Guardian of your cravings! How are you feeling today? I can suggest delicious food based on your mood, preferences, or cravings.", 
-      sender: 'bot', 
-      timestamp: new Date() 
+    {
+      id: 1,
+      text: "👋 Hello! I'm CraveKeeper, Guardian of your cravings! How are you feeling today? I can suggest delicious food based on your mood, preferences, or cravings.",
+      sender: 'bot',
+      timestamp: new Date()
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
@@ -19,10 +21,10 @@ const ChatWidget = () => {
   const navigate = useNavigate();
 
   // Gemini API key - works with both Vite and Create React App
-  const GEMINI_API_KEY = import.meta.env?.VITE_GEMINI_API_KEY || 
-                         process.env?.REACT_APP_GEMINI_API_KEY || 
-                         'AIzaSyDxiRpdHkAKI0MNJO81Bsnr8Q3mTtOJ3Rk';
-  
+  const GEMINI_API_KEY = import.meta.env?.VITE_GEMINI_API_KEY ||
+    process.env?.REACT_APP_GEMINI_API_KEY ||
+    'AIzaSyDxiRpdHkAKI0MNJO81Bsnr8Q3mTtOJ3Rk';
+
   useEffect(() => {
     console.log('🔍 ChatWidget mounted');
     console.log('🔑 API Key loaded:', GEMINI_API_KEY ? 'Yes' : 'No');
@@ -62,25 +64,33 @@ const ChatWidget = () => {
     return () => clearTimeout(timer);
   }, [messages, isTyping]);
 
-  // FIXED: Gemini API Integration with correct model name
+  // FIXED: Gemini API Integration with manual database context
   const getGeminiResponse = async (userMessage) => {
     try {
       console.log('🤖 Calling Gemini API...');
+
+      const menuContext = food_list.map(item =>
+        `- ${item.name} (${item.category}): ${item.description} - $${item.price}`
+      ).join('\n');
+
+      const prompt = `You are CraveKeeper, the AI food concierge for Auralicious.
       
-      const prompt = `You are CraveKeeper, a friendly food recommendation chatbot for Auralicious Food Delivery. 
+CURRENT MENU DATABASE:
+${menuContext}
 
-Your role: Suggest food based on the user's mood, preferences, cravings, or dietary needs.
+USER MESSAGE: "${userMessage}"
 
-User message: "${userMessage}"
+YOUR GOAL:
+Suggest 2-3 specific items FROM THE MENU ABOVE based on the user's input (mood, weather, craving).
 
-Guidelines:
-- If the user mentions a mood (happy, sad, stressed, tired, energetic, etc.), suggest foods that match that mood
-- If they mention preferences (spicy, sweet, healthy, comfort food, etc.), recommend accordingly
-- Keep responses friendly, concise (2-3 sentences), and food-focused
-- Include 2-3 specific food suggestions with emojis
-- If they ask about delivery, menu, orders, provide helpful info about Auralicious Food Delivery
+RULES:
+1. ONLY suggest items listed in the "CURRENT MENU DATABASE". Do not hallucinate dishes.
+2. If the user mentions WEATHER (rain, cold, sunny, hot), suggest matching foods (e.g., hot soups/coffee for rain, ice cream/salad for heat).
+3. If the user mentions MOOD (sad, happy, tired), suggest comfort/celebratory/energy foods from the menu.
+4. If no specific match is found, suggest popular items from the menu.
+5. Keep responses short, friendly, and use emojis.
 
-Respond as CraveKeeper in a warm, helpful tone:`;
+Respond as a helpful waiter:`;
 
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
@@ -107,16 +117,16 @@ Respond as CraveKeeper in a warm, helpful tone:`;
       });
 
       console.log('📡 Response status:', response.status);
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error('❌ API Error:', errorData);
         throw new Error(errorData.error?.message || 'API request failed');
       }
-      
+
       const data = await response.json();
       console.log('✅ API Response received');
-      
+
       if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
         const aiResponse = data.candidates[0].content.parts[0].text;
         console.log('🤖 AI Response:', aiResponse);
@@ -133,7 +143,7 @@ Respond as CraveKeeper in a warm, helpful tone:`;
 
   const getMoodBasedFallback = (message) => {
     const lowerMessage = message.toLowerCase();
-    
+
     if (lowerMessage.includes('happy') || lowerMessage.includes('good') || lowerMessage.includes('great')) {
       return "🎉 That's wonderful! For a happy mood, try our Rainbow Salad, Spring Rolls, or Fresh Fruit Bowl! Light and refreshing! 😊";
     }
@@ -155,14 +165,14 @@ Respond as CraveKeeper in a warm, helpful tone:`;
     if (lowerMessage.includes('healthy') || lowerMessage.includes('diet') || lowerMessage.includes('fit')) {
       return "🥗 Health-conscious choice! Greek Salad, Grilled Chicken Bowl, or Quinoa Buddha Bowl are perfect! 💪";
     }
-    
+
     return "I'd love to help! Tell me your mood (happy, stressed, hungry) or what you're craving (spicy, sweet, healthy), and I'll find the perfect food! 🍽️";
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (!inputMessage.trim()) return;
 
     const userMessage = {
@@ -178,7 +188,7 @@ Respond as CraveKeeper in a warm, helpful tone:`;
     setIsTyping(true);
 
     const hardcodedResponse = getHardcodedResponse(currentInput);
-    
+
     if (hardcodedResponse) {
       setTimeout(() => {
         setMessages(prev => [...prev, {
@@ -214,41 +224,41 @@ Respond as CraveKeeper in a warm, helpful tone:`;
 
   const getHardcodedResponse = (message) => {
     const lowerMessage = message.toLowerCase();
-    
+
     if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage === 'hey') {
       return "Hello! I'm CraveKeeper, your personal food guardian! 🍕 Tell me how you're feeling, and I'll suggest the perfect meal for you!";
     }
-    
+
     if (lowerMessage.includes('menu')) {
       return "🍽️ You can view our full menu by clicking the 'View Menu' button below or on our homepage. We have delicious salads, rolls, desserts, pasta, noodles, and more!";
     }
-    
+
     if (lowerMessage.includes('hours') || lowerMessage.includes('timing') || lowerMessage.includes('open')) {
       return "⏰ We're open Monday-Sunday from 10:00 AM to 11:00 PM. Order anytime during these hours!";
     }
-    
+
     if (lowerMessage.includes('contact') || lowerMessage.includes('phone') || lowerMessage.includes('email')) {
       return "📞 You can reach us at +91 98765 43210 or email us at contact@auralicious.com. We're here to help!";
     }
-    
+
     if (lowerMessage.includes('delivery') || lowerMessage.includes('deliver')) {
       return "🚚 Yes, we offer delivery! Delivery typically takes 30-45 minutes depending on your location. Free delivery on orders over ₹500!";
     }
-    
+
     if (lowerMessage.includes('payment') || lowerMessage.includes('pay')) {
       return "💳 We accept all major credit cards, debit cards, UPI, and digital payments including PayPal, Apple Pay, and Google Pay.";
     }
-    
+
     if (lowerMessage.includes('order status') || lowerMessage.includes('track order')) {
       return "📦 Click 'Order Status' button below to track your order. You can also check 'My Orders' from the menu!";
     }
-    
+
     return null;
   };
 
   const quickActions = [
-    { 
-      text: "View Menu", 
+    {
+      text: "View Menu",
       action: () => {
         const menuElement = document.getElementById('explore-menu');
         if (menuElement) {
@@ -259,15 +269,15 @@ Respond as CraveKeeper in a warm, helpful tone:`;
         setIsOpen(false);
       }
     },
-    { 
-      text: "Order Status", 
+    {
+      text: "Order Status",
       action: () => {
         navigate('/myorders');
         setIsOpen(false);
       }
     },
-    { 
-      text: "Contact Us", 
+    {
+      text: "Contact Us",
       action: () => {
         const footerElement = document.getElementById('footer');
         if (footerElement) {
@@ -278,8 +288,8 @@ Respond as CraveKeeper in a warm, helpful tone:`;
         setIsOpen(false);
       }
     },
-    { 
-      text: "Surprise Me! 🎲", 
+    {
+      text: "Surprise Me! 🎲",
       action: () => {
         setInputMessage("I'm feeling adventurous! Suggest something exciting");
         setTimeout(() => {
@@ -312,7 +322,7 @@ Respond as CraveKeeper in a warm, helpful tone:`;
             <div className="chat-tooltip-content">
               "Craving something? Ask me! 🤤"
             </div>
-            <button 
+            <button
               className="chat-tooltip-close"
               onClick={(e) => {
                 e.stopPropagation();
@@ -324,7 +334,7 @@ Respond as CraveKeeper in a warm, helpful tone:`;
             </button>
           </div>
         )}
-        
+
         <button
           onClick={handleChatToggle}
           className="chat-toggle-btn"
@@ -371,7 +381,7 @@ Respond as CraveKeeper in a warm, helpful tone:`;
                 </div>
               </div>
             ))}
-            
+
             {/* Typing Indicator */}
             {isTyping && (
               <div className="message bot-message">
@@ -411,8 +421,8 @@ Respond as CraveKeeper in a warm, helpful tone:`;
               className="chat-input"
               autoComplete="off"
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="chat-send-btn"
               disabled={!inputMessage.trim()}
               aria-label="Send message"

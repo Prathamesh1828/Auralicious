@@ -20,8 +20,11 @@ const MyOrders = () => {
         { headers: { token } }
       );
       if (response.data.success) {
-        setOrders(response.data.data);
-        console.log("Fetched Orders:", response.data.data);
+        // Sort orders by date (newest first)
+        const sortedOrders = response.data.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setOrders(sortedOrders);
+        console.log("Raw Date Sample:", sortedOrders.length > 0 ? sortedOrders[0].date : "No orders");
+        console.log("Fetched Orders:", sortedOrders);
       }
     } catch (error) {
       console.log("Error fetching orders:", error);

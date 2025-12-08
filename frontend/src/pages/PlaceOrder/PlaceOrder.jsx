@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const PlaceOrder = () => {
-  const { getTotalCartAmount, token, food_list, cartItems, url } = useContext(StoreContext);
+  const { getTotalCartAmount, token, food_list, cartItems, url, setCartItems } = useContext(StoreContext);
   const navigate = useNavigate();
 
   const [data, setData] = useState({
@@ -99,6 +99,7 @@ const PlaceOrder = () => {
       if (response.data.success) {
         // Handle Cash on Delivery
         if (paymentMethod === "cod") {
+          setCartItems({}); // Clear cart
           alert("Order placed successfully! Pay on delivery.");
           navigate("/myorders");
           setLoading(false);
@@ -142,6 +143,7 @@ const PlaceOrder = () => {
               console.log("Verification Response:", verifyResponse.data);
 
               if (verifyResponse.data.success) {
+                setCartItems({}); // Clear cart
                 alert("Payment successful! Your order has been placed.");
                 navigate("/myorders"); // Navigate to orders page
               } else {

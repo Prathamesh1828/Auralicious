@@ -2,8 +2,10 @@ import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import validator from "validator"
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { OAuth2Client } from 'google-auth-library';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // login user 
 const loginUser = async (req, res) => {
@@ -88,22 +90,18 @@ const forgotPassword = async (req, res) => {
         user.otpExpire = Date.now() + 3600000; // 1 hour
         await user.save();
 
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
+        const { data, error } = await resend.emails.send({
+            from: "onboarding@resend.dev",
+            to: email,
+            subject: "Password Reset OTP",
+            html: `<p>Your OTP for password reset is: <strong>${otp}</strong></p>`
         });
 
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Password Reset OTP',
-            text: `Your OTP for password reset is: ${otp}`
-        };
+        if (error) {
+            console.error("Resend Error:", error);
+            return res.json({ success: false, message: "Error sending email: " + error.message });
+        }
 
-        await transporter.sendMail(mailOptions);
         res.json({ success: true, message: "OTP sent to your email" });
 
     } catch (error) {
